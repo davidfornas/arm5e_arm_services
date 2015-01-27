@@ -1,0 +1,5 @@
+#TODO: postion and velocity control support, maybe different services
+#TODO: Cartesian control, maybe another services too
+float32[] in_vel
+---
+bool success
