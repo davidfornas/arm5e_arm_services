@@ -15,7 +15,7 @@ arm5e_arm_services::ArmServer::ArmServer(
   ROS_INFO("Service \"move_arm\" advertised.");
   joints_service_server_ = nh_private_.advertiseService("get_joints", &ArmServer::jointsServiceCallback, this);
   ROS_INFO("Service \"get_joints\" advertised.");
-  robot_ = new ARM5Arm(nh_private, "/uwsim/joint_state", "/uwsim/joint_state_command");
+  robot_ = new ARM5Arm(nh_private, "/uwsim/joint_state", "/uwsim/joint_state_command"); /// @TODO Parameterization.
 }
 
 bool arm5e_arm_services::ArmServer::fkServiceCallback(
@@ -41,6 +41,7 @@ bool arm5e_arm_services::ArmServer::fkServiceCallback(
   res.bMe=p;
   return true;
 }
+
 bool arm5e_arm_services::ArmServer::ikServiceCallback(
     InverseKinematicsRequest& req,
     InverseKinematicsResponse& res)
@@ -66,18 +67,19 @@ bool arm5e_arm_services::ArmServer::ikServiceCallback(
   p.orientation.z=q.z();
   p.orientation.w=q.w();
   res.bMe=p;
-  res.found=true;//FIX-ME
+  res.found=true;/// @TODO Check if the result is good enough.
   return true;
 }
+
 bool arm5e_arm_services::ArmServer::moveServiceCallback(
     MoveArmRequest& req,
     MoveArmResponse& res)
 {
-  //get req
-  //CARTESIAN
+  /// @TODO Cartesian movement
   //vpColVector xdot(6);
   //robot_->setCartesianVelocity(xdot);
-  //JOINT SPACE
+
+  //Joint space velocity request
   vpColVector joints(5);
   joints[0] = req.in_vel[0];
   joints[1] = req.in_vel[1];
@@ -87,12 +89,13 @@ bool arm5e_arm_services::ArmServer::moveServiceCallback(
   robot_->setJointVelocity(joints);
   return true;
 }
+
 bool arm5e_arm_services::ArmServer::jointsServiceCallback(
     GetJointsRequest& req,
     GetJointsResponse& res)
 {
   vpColVector jstate(5);
-  robot_->getJointValues(jstate);//getPosition para no tener que hacer FK(current)
+  robot_->getJointValues(jstate);/// Cartesian position with getPosition=>FK(currentJoints)
   sensor_msgs::JointState js;
   js.name.push_back(std::string("Slew"));
   js.position.push_back(jstate[0]);
@@ -107,8 +110,6 @@ bool arm5e_arm_services::ArmServer::jointsServiceCallback(
   res.joints=js;
   return true;
 }
-
-
 
 int main(int argc, char **argv){
   ros::init(argc, argv, "arm5_grasp_exec");

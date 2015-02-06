@@ -1,14 +1,12 @@
 #ifndef ARM5_SERVICES
 #define ARM5_SERVICES
 
-
 #include "arm5e_arm_services/ForwardKinematics.h"
 #include "arm5e_arm_services/InverseKinematics.h"
 #include "arm5e_arm_services/MoveArm.h"
 #include "arm5e_arm_services/GetJoints.h"
 
 #include <mar_robot_arm5e/ARM5Arm.h>
-
 #include "ros/ros.h"
 
 namespace arm5e_arm_services
@@ -30,7 +28,6 @@ private:
   ros::NodeHandle nh_, nh_private_;
   ros::ServiceServer fk_service_server_, ik_service_server_, move_service_server_, joints_service_server_;
   ARM5Arm * robot_;
-  // planner pointer * MarkerDetector detector_;
 };
 
 } // end of namespace
